@@ -3,6 +3,7 @@ import os
 import argparse
 import json
 import ast
+from tqdm import tqdm
 
 def parse_args():
     parser = argparse.ArgumentParser(description="question-answer-generation-using-gpt-3")
@@ -18,11 +19,11 @@ def main():
     with open(args.json_path) as file:
         video_data = json.load(file)
 
-    video_results = video_data['results']    
+    # video_results = video_data['results']    
 
     # Preparing dictionary of video data
     video_set = {}
-    for sample in video_results:
+    for sample in video_data:
         video_id = sample['video_id']
         ground_truth = sample['ground_truth']
         prediction = sample['prediction']
@@ -33,7 +34,7 @@ def main():
 
     # Process the video data
     results = {}
-    for video_id, data in video_set.items():
+    for video_id, data in tqdm(video_set.items()):
         ground_truth = data['ground_truth']
         prediction = data['prediction']
         try:
@@ -69,7 +70,7 @@ def main():
             response_message = completion["choices"][0]["message"]["content"]
             response_dict = ast.literal_eval(response_message)
             score = response_dict['score']
-
+            print(score)
             results[video_id] = {'score': score, 'match': 'yes' if score > 2.5 else 'no'}
 
         except Exception as e:
