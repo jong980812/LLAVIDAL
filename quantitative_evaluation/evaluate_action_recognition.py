@@ -46,10 +46,10 @@ def main():
                         "role": "system",
                         "content": 
                             "You are an intelligent chatbot designed for evaluating the similarity between ground truth and predicted actions in videos. "
-                            "Your task is to compare the predicted action sequnecs  with the ground truth action sequences and determine how similar they are. Here's how you can accomplish the task:"
+                            "Your task is to compare the predicted action with the ground truth action and  determine how similar they are. Here's how you can accomplish the task:"
                             "------"
                             "##INSTRUCTIONS: "
-                            "- Focus on the meaningful similarity between the predicted action sequences and the ground truth action sequences.\n"
+                            "- Focus on the meaningful similarity between the predicted action  and the ground truth action.\n"
                             "- Consider synonyms or paraphrases as contributing to similarity.\n"
                             "- Evaluate the similarity of the prediction compared to the ground truth on a scale from 1 to 5."
                     },
