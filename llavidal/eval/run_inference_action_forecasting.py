@@ -7,6 +7,7 @@ from llavidal.inference import llavidal_infer
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--video_dir', help='Directory containing video files.', required=True, default='')
     parser.add_argument('--qa_file', help='Path to the QA file containing video ids, questions, and answers.', required=False, default='/path/to/qa_file.json')
     parser.add_argument('--output_dir', help='Directory to save the model results JSON.', required=False, default='/path/to/output_dir')
     parser.add_argument('--output_name', help='Name of the file for storing results JSON.', required=False, default='output_file_name')
@@ -30,12 +31,15 @@ def run_inference(args):
     conv_mode = args.conv_mode
     correct_count = 0
     total_count = 0
-    for sample in tqdm(qa_data):
-        video_id = sample['id']
-        video_path = sample['video_path']
-        question = sample['Q'] + '. The output should be the choice among one of the following choices.'
-        choices = sample['Options'].split()
-        ground_truth = sample['Ground_truth']
+    for i , sample in tqdm(qa_data.items()):
+        video_id = sample['video_id']
+        start_frame = sample['start_frame']
+        end_frame  = sample['end_frame']
+        video_path = f'{video_id}_{start_frame}_{end_frame}.mp4'
+        video_path = os.path.join(args.video_dir, video_path)
+        question = sample['question'] + '. The output should be the choice among one of the following choices.'
+        choices = sample['choices']
+        ground_truth = choices[sample['answer']]
         formatted_question = f"{question} Choices are {' '.join(choices)}"
         if os.path.exists(video_path):
             video_frames = load_video(video_path)
@@ -49,13 +53,11 @@ def run_inference(args):
                     correct_count += 1
                 total_count += 1
                 output_list.append({'video_id': video_id, 'ground_truth': ground_truth, 'prediction': prediction})
-                save_to_json(args.output_dir, f"{args.output_name}.json", {
-                    'results': output_list,
-                    'accuracy': correct_count / total_count if total_count > 0 else 0
-                })
+                # save_to_json(args.output_dir, f"{args.output_name}.json", output_list)
             except Exception as e:
                 print(f"Error processing video file '{video_id}': {e}")
-    print(f"Final Accuracy: {correct_count / total_count * 100:.2f}% if total_count > 0 else 0.00%")
+    # print(f"Final Accuracy: {correct_count / total_count * 100:.2f}% if total_count > 0 else 0.00%")
+    save_to_json(args.output_dir,f"{args.output_name}.json",output_list )
 
 if __name__ == "__main__":
     args = parse_args()

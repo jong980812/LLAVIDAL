@@ -115,10 +115,10 @@ def initialize_model(model_name, projection_path=None):
     # Add tokens to tokenizer
     tokenizer.add_tokens([DEFAULT_VIDEO_PATCH_TOKEN], special_tokens=True)
     if mm_use_vid_start_end:
-        #tokenizer.add_tokens([DEFAULT_VID_START_TOKEN, DEFAULT_VID_END_TOKEN], special_tokens=True)
-        additional_tokens = [DEFAULT_VID_START_TOKEN, DEFAULT_VID_END_TOKEN,DEFAULT_OBJECT_START_TOKEN,DEFAULT_OBJECT_PATCH_TOKEN,DEFAULT_OBJECT_END_TOKEN]
+        tokenizer.add_tokens([DEFAULT_VID_START_TOKEN, DEFAULT_VID_END_TOKEN], special_tokens=True)
+        additional_tokens = [DEFAULT_OBJECT_START_TOKEN,DEFAULT_OBJECT_PATCH_TOKEN,DEFAULT_OBJECT_END_TOKEN]
         tokenizer.add_tokens(additional_tokens, special_tokens=True)
-        # DEFAULT_POSE_START_TOKEN,DEFAULT_POSE_PATCH_TOKEN,DEFAULT_POSE_END_TOKEN
+       
 
     # Resize token embeddings of the model
     model.resize_token_embeddings(len(tokenizer))
@@ -155,11 +155,10 @@ def initialize_model(model_name, projection_path=None):
         vision_config.vid_start_token, vision_config.vid_end_token = tokenizer.convert_tokens_to_ids(
             [DEFAULT_VID_START_TOKEN, DEFAULT_VID_END_TOKEN])
         # vision_config.pose_start_token, vision_config.pose_end_token = tokenizer.convert_tokens_to_ids(
-        #     [DEFAULT_POSE_START_TOKEN, DEFAULT_POSE_END_TOKEN])
+            # [DEFAULT_POSE_START_TOKEN, DEFAULT_POSE_END_TOKEN])
         vision_config.object_start_token, vision_config.object_end_token = tokenizer.convert_tokens_to_ids(
             [DEFAULT_OBJECT_START_TOKEN, DEFAULT_OBJECT_END_TOKEN])
 
     # Set video token length
     video_token_len = 356
-
     return model, vision_tower, tokenizer, image_processor, video_token_len

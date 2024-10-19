@@ -1,9 +1,10 @@
 import os
+import sys
 import argparse
 import json
 from tqdm import tqdm
 from llavidal.eval.model_utils import initialize_model, load_video
-from llavidal.inference import llavidal_infer
+from llavidal.likelihood_inference import llavidal_infer
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -25,39 +26,28 @@ def run_inference(args):
     model, vision_tower, tokenizer, image_processor, video_token_len = initialize_model(args.model_name, args.projection_path)
     with open(args.qa_file) as file:
         qa_data = json.load(file)
-    if not os.path.exists(args.output_dir):
-        os.makedirs(args.output_dir)
-    output_list = []
     conv_mode = args.conv_mode
     correct_count = 0
-    total_count = 0
+    total = 0
     for key, sample in tqdm(qa_data.items()):
         video_id = sample['video_id']
-        question = sample['question'] 
+        question = sample['question']   
         choices = sample['choices']
         ground_truth = sample['ground_truth']
         choices_text = ' '.join([f"{k}: {v}" for k, v in choices.items()])
         formatted_question = f"{question} Choices are {choices_text}"
+        prompts = [f"{choices[f'{x}']}" for x in range(1, 5)]
         video_path = os.path.join(args.video_dir, os.path.basename(video_id))
         if os.path.exists(video_path):
             video_frames = load_video(video_path)
-            try:
-                prediction = llavidal_infer(video_frames, formatted_question, conv_mode, model, vision_tower, tokenizer, image_processor, video_token_len)
-                sample['prediction'] = prediction
-                # print(prediction)
-                if prediction == ground_truth:
-                    correct_count += 1
-                total_count += 1
-                output_list.append({'video_id': video_id, 'ground_truth': ground_truth, 'prediction': prediction})
-                # save_to_json(args.output_dir, f"{args.output_name}.json", {
-                #     'results': output_list,
-                #     'accuracy': correct_count / total_count if total_count > 0 else 0
-                # })
-            except Exception as e:
-                print(f"Error processing video file '{video_id}': {e}")
-    # print(f"Final Accuracy: {correct_count / total_count * 100:.8f}% if total_count > 0 else 0.00%")
-    save_to_json(args.output_dir,f"{args.output_name}.json",output_list )
-    
+            prediction = llavidal_infer(video_frames, question, prompts, conv_mode, model, vision_tower, tokenizer, image_processor, video_token_len)
+            predicted_answer = choices[f"{prediction + 1}"]
+            print(ground_truth , predicted_answer)
+            correct_count += ground_truth == predicted_answer
+            total += 1
+        print(f"Accuracy: {correct_count / total}")
+
+
 if __name__ == "__main__":
     args = parse_args()
     run_inference(args)
