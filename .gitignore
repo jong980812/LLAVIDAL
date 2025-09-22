@@ -10,3 +10,4 @@ LLaVA-7B-Lightening-v1-1
 training_jsons/
 training_data/
 huggingface_dataset/
+wandb/

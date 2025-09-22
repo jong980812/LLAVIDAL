@@ -1,3 +1,6 @@
+
+
+
 import copy
 from dataclasses import dataclass, field
 import json
@@ -15,6 +18,19 @@ from llavidal.constants import *
 import pickle
 import numpy as np
 import os
+def maybe_zero_3(param, ignore_status=False, name=None):
+    from deepspeed import zero
+    from deepspeed.runtime.zero.partition_parameters import ZeroParamStatus
+
+    if hasattr(param, "ds_id"):
+        if param.ds_status == ZeroParamStatus.NOT_AVAILABLE:
+            if not ignore_status:
+                logging.warning(f"{name}: param.ds_status != ZeroParamStatus.NOT_AVAILABLE: {param.ds_status}")
+        with zero.GatheredParameters([param]):
+            param = param.data.detach().cpu().clone()
+    else:
+        param = param.detach().cpu().clone()
+    return param
 
 IGNORE_INDEX = -100
 DEFAULT_PAD_TOKEN = "[PAD]"
@@ -41,7 +57,7 @@ class DataArguments:
     lazy_preprocess: bool = False
     is_multimodal: bool = False
     sep_video_conv_front: bool = False
-    video_token_len: int = 0
+    video_token_len: int = 64
     video_folder: Optional[str] = field(default=None)
     frame_aspect_ratio: str = 'square'
 
@@ -76,6 +92,7 @@ def safe_save_model_for_hf_trainer(trainer: transformers.Trainer,
     dist.barrier()
     state_dict = trainer.model.state_dict()
     trainer._save(output_dir, state_dict=state_dict)  # noqa
+    trainer.save_model(output_dir)
 
 def smart_tokenizer_and_embedding_resize(
         special_tokens_dict: Dict,
@@ -629,13 +646,31 @@ def train():
         'object': True if llavidal_args.object_folder is not None else False,
         'pose': True if llavidal_args.pose_folder is not None else False,
     }
+    import os
+    os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:128,garbage_collection_threshold:0.6"
 
     model = LLAVIDALLlamaForCausalLM.from_pretrained(
         model_args.model_name_or_path,
         cache_dir=training_args.cache_dir,
         model_args=modality_info,
+        attn_implementation = "flash_attention_2" 
     )
+    total_params = sum(p.numel() for p in model.parameters())
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
+    def format_num(n):
+        if n >= 1e9:
+            return f"{n/1e9:.2f}B"
+        else:
+            return f"{n/1e6:.2f}M"
+
+    logging.warning(
+        f"Model Parameters:\n"
+        f"- Total params     : {format_num(total_params)} ({total_params:,})\n"
+        f"- Trainable params : {format_num(trainable_params)} ({trainable_params:,})\n"
+        f"- Frozen params    : {format_num(total_params - trainable_params)}"
+    )
+    # model.config.attn_implementation = "flash_attention_2"   
     model.config.use_cache = False
 
     if model_args.freeze_backbone:
@@ -717,7 +752,7 @@ def train():
             FSDP.__init__ = patch_FSDP_use_orig_params(FSDP.__init__)
 
     data_module = make_supervised_data_module(tokenizer=tokenizer, data_args=data_args, llavidal_args=llavidal_args) # this is the dataset
-    training_args.report_to = []
+    # training_args.report_to = []
     # training_args.max_steps = 10
 
     # show trainable parameters
@@ -725,6 +760,13 @@ def train():
     logging.warning(f"!!! Make sure these are correct !!!\nTrainable Parameters: {trainable_params}")
 
     trainer = LlavidalTrainer(model=model, tokenizer=tokenizer, args=training_args, **data_module)
+
+
+
+    from sanity_check_code import log_param_counts
+    log_param_counts(model)
+
+
 
     if list(pathlib.Path(training_args.output_dir).glob("checkpoint-*")):
         trainer.train(resume_from_checkpoint=True)

@@ -293,7 +293,8 @@ class LLAVIDALLlamaForCausalLM(LlamaForCausalLM):
     config_class = LLAVIDALConfig
 
     def __init__(self, config, model_args=None):
-        super(LlamaForCausalLM, self).__init__(config)
+        # super(LlamaForCausalLM, self).__init__(config)
+        super().__init__(config)
         self.model = LLAVIDALLlamaModel(config, modality_args=model_args)
 
         self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
