@@ -12,3 +12,4 @@ training_data/
 huggingface_dataset/
 wandb/
 logs/
+scripts/
