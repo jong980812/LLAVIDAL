@@ -11,3 +11,4 @@ training_jsons/
 training_data/
 huggingface_dataset/
 wandb/
+logs/

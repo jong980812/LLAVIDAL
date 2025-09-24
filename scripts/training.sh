@@ -1,0 +1,58 @@
+#!/bin/bash
+#SBATCH -p batch
+#SBATCH --gres=gpu:8
+#SBATCH --cpus-per-gpu=12
+#SBATCH --mem-per-gpu=40G
+#SBATCH --time=4-00:00:00
+#SBATCH -J LLAVIDAL_train
+#SBATCH -o logs/llavidal_%j.out
+#SBATCH -e logs/llavidal_%j.err
+
+
+
+# NCCL 통신 인터페이스 (환경에 맞게 사용)
+socket_ifname=$(cat /etc/hosts | grep "$(hostname)" | grep -Eo 'en\w+' | head -n1 || true)
+export NCCL_SOCKET_IFNAME="${socket_ifname:-eth0}"
+
+
+# 환경변수
+export HF_HOME="/data/dataset/LLaVA-Video-100K-Subset/"
+export PYTHONPATH="./:$PYTHONPATH"
+export WANDB_PROJECT="LLAVIDAL"
+export WANDB_NAME="LLAVIDAL_videe-text_3epochs_1"
+
+# 실행
+deepspeed \
+  --num_nodes 1 \
+  --num_gpus 8 \
+  --master_port 11111 \
+  llavidal/train/train_mem.py \
+  --deepspeed scripts/zero2.json \
+  --version v1 \
+  --tune_mm_mlp_adapter True \
+  --mm_use_vid_start_end \
+  --bf16 True \
+  --num_train_epochs 3 \
+  --per_device_train_batch_size 4 \
+  --per_device_eval_batch_size 4 \
+  --gradient_accumulation_steps 1 \
+  --evaluation_strategy no \
+  --save_strategy steps \
+  --save_steps 3000 \
+  --report_to wandb \
+  --save_total_limit 3 \
+  --learning_rate 2e-5 \
+  --weight_decay 0. \
+  --warmup_ratio 0.03 \
+  --lr_scheduler_type cosine \
+  --logging_steps 100 \
+  --tf32 True \
+  --model_max_length 2048 \
+  --gradient_checkpointing True \
+  --lazy_preprocess True \
+  --output_dir ./work_dirs/LLAVIDAL_video-object-pose-text_3epochs \
+  --model_name_or_path mmaaz60/LLaVA-7B-Lightening-v1-1 \
+  --data_path /data/dataset/ADL-X/instruction_data/NTU_QA-for-training.json \
+  --video_folder /local_datasets/ADL-X/data/vidlab_datasets/NTU_combination_video_features \
+  --object_folder /local_datasets/ADL-X/data/users/rchakra6/concatenated_objects \
+  --pose_folder /local_datasets/ADL-X/data/users/rchakra6/concatenated_poses

@@ -44,6 +44,7 @@ class LlavidalTrainer(Trainer):
                 os.makedirs(mm_projector_folder, exist_ok=True)
                 torch.save(weight_to_save, os.path.join(mm_projector_folder, f'{current_folder}.bin'))
             else:
+                os.makedirs(output_dir, exist_ok=True)
                 torch.save(weight_to_save, os.path.join(output_dir, f'mm_projector.bin'), )
 
         # super(LLAVIDALTrainer, self)._save(output_dir, state_dict)

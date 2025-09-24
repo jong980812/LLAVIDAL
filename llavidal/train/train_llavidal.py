@@ -52,6 +52,10 @@ class ModelArguments:
 
 @dataclass
 class DataArguments:
+    sample_ratio: float = field(default=1.0, metadata={"help": "0~1 사이 비율만 사용"})
+    sample_max: Optional[int] = field(default=None, metadata={"help": "사용할 샘플 수 상한 (ratio 적용 후)"})
+    sample_seed: int = field(default=42, metadata={"help": "샘플링 시드"})
+    sample_mode: str = field(default="random", metadata={"help": "'random' 또는 'first'"})
     data_path: str = field(default=None,
                            metadata={"help": "Path to the training data."})
     lazy_preprocess: bool = False
@@ -90,8 +94,8 @@ def safe_save_model_for_hf_trainer(trainer: transformers.Trainer,
                                    output_dir: str):
     """Collects the state dict and dump to disk."""
     dist.barrier()
-    state_dict = trainer.model.state_dict()
-    trainer._save(output_dir, state_dict=state_dict)  # noqa
+    # state_dict = trainer.model.state_dict()
+    # trainer._save(output_dir, state_dict=state_dict)  # noqa
     trainer.save_model(output_dir)
 
 def smart_tokenizer_and_embedding_resize(
@@ -447,20 +451,86 @@ class SupervisedDataset(Dataset):
         return dict(input_ids=self.input_ids[i], labels=self.labels[i])
 
 
-class LazySupervisedDataset(Dataset):
-    """Dataset for supervised fine-tuning."""
+# class LazySupervisedDataset(Dataset):
+#     """Dataset for supervised fine-tuning."""
 
+#     def __init__(self, data_path: str,
+#                  tokenizer: transformers.PreTrainedTokenizer,
+#                  multimodal_cfg: dict):
+#         super(LazySupervisedDataset, self).__init__()
+#         logging.warning("Loading data...")
+#         list_data_dict = json.load(open(data_path, "r"))
+
+#         logging.warning("Formatting inputs...Skip in lazy mode")
+#         self.tokenizer = tokenizer
+#         self.list_data_dict = list_data_dict
+#         self.multimodal_cfg = multimodal_cfg
+import random
+import torch.distributed as dist
+
+class LazySupervisedDataset(Dataset):
     def __init__(self, data_path: str,
                  tokenizer: transformers.PreTrainedTokenizer,
                  multimodal_cfg: dict):
-        super(LazySupervisedDataset, self).__init__()
+        super().__init__()
         logging.warning("Loading data...")
         list_data_dict = json.load(open(data_path, "r"))
+
+        # ----- 여기서 서브샘플링 -----
+        ratio = float(multimodal_cfg.get("sample_ratio", 1.0))
+        sample_max = multimodal_cfg.get("sample_max", None)
+        seed = int(multimodal_cfg.get("sample_seed", 42))
+        mode = str(multimodal_cfg.get("sample_mode", "random")).lower()
+
+        total = len(list_data_dict)
+        if ratio <= 0:
+            raise ValueError("sample_ratio must be > 0.")
+        if ratio > 1.0:
+            ratio = 1.0
+
+        target_n = int(round(total * ratio))
+        if sample_max is not None:
+            target_n = min(target_n, int(sample_max))
+        target_n = max(1, min(target_n, total))
+
+        if target_n < total:
+            # 분산에서 완전 동일 서브셋을 보장하고 싶다면 rank0에서 뽑아 브로드캐스트
+            # 여기선 간단히 동일 seed로 모든 rank가 같은 샘플링을 수행 (대개 동일 결과)
+            if mode == "first":
+                idx = list(range(target_n))
+            else:
+                rng = random.Random(seed)
+                idx = rng.sample(range(total), target_n)
+                idx.sort()  # 순서 안정성
+
+            # (선택) 분산에서 확실히 동일하게 만들기 — 주석 해제하면 rank0->broadcast
+            # if dist.is_available() and dist.is_initialized():
+            #     rank = dist.get_rank()
+            #     world = dist.get_world_size()
+            #     import torch
+            #     if rank == 0:
+            #         idx_t = torch.tensor(idx, dtype=torch.long)
+            #         sz_t = torch.tensor([len(idx_t)], dtype=torch.long)
+            #     else:
+            #         idx_t = torch.empty(0, dtype=torch.long)
+            #         sz_t = torch.empty(1, dtype=torch.long)
+            #     dist.broadcast(sz_t, src=0)
+            #     if rank != 0:
+            #         idx_t = torch.empty(sz_t.item(), dtype=torch.long)
+            #     dist.broadcast(idx_t, src=0)
+            #     idx = idx_t.tolist()
+
+            list_data_dict = [list_data_dict[i] for i in idx]
+            logging.warning(f"Subsampled dataset: {len(list_data_dict)}/{total} "
+                            f"(ratio≈{len(list_data_dict)/total:.3f}, seed={seed}, mode={mode})")
+        else:
+            logging.warning(f"Using full dataset: {total} samples")
 
         logging.warning("Formatting inputs...Skip in lazy mode")
         self.tokenizer = tokenizer
         self.list_data_dict = list_data_dict
         self.multimodal_cfg = multimodal_cfg
+
 
     def __len__(self):
         return len(self.list_data_dict)
@@ -620,7 +690,11 @@ def make_supervised_data_module(tokenizer: transformers.PreTrainedTokenizer,
                                     use_modality_string_prefix=getattr(data_args, 'use_modality_string_prefix', False),
                                     modality_mask_probs=dict(video_mask_prob=llavidal_args.video_mask_prob,
                                                              object_mask_prob=llavidal_args.object_mask_prob,
-                                                             pose_mask_prob=llavidal_args.pose_mask_prob)
+                                                             pose_mask_prob=llavidal_args.pose_mask_prob),
+                                                                         sample_ratio=float(getattr(data_args, "sample_ratio", 1.0)),
+                                    sample_max=getattr(data_args, "sample_max", None),
+                                    sample_seed=int(getattr(data_args, "sample_seed", 42)),
+                                    sample_mode=str(getattr(data_args, "sample_mode", "random")),
                                     ))
     data_collator = DataCollatorForSupervisedDataset(tokenizer=tokenizer)
     return dict(train_dataset=train_dataset,
