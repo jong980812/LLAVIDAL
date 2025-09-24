@@ -59,7 +59,10 @@ def run_inference(args):
         video_name = sample['video_name']
         sample_set = sample
         question = sample['Q']
+<<<<<<< HEAD:evaluation_ressults/anno_evaluation/ADL-Descriptions/inference/run_inference_benchmark_general.py
         gt_answer = sample['A']
+=======
+>>>>>>> upstream/v2:llavidal/eval/run_inference_benchmark_general.py
 
         # Load the video file
         for fmt in video_formats:  # Added this line
