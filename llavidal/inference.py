@@ -39,7 +39,7 @@ def get_spatio_temporal_features_torch(features):
     return concat_tokens
 
 
-def llavidal_infer(video_frames, question, conv_mode, model, vision_tower, tokenizer, image_processor, video_token_len, max_new_tokens=1024):
+def llavidal_infer(video_frames, question, conv_mode, model, vision_tower, tokenizer, image_processor, video_token_len,device, max_new_tokens=1024):
     """
     Run inference using the llavidal model.
 
@@ -59,10 +59,10 @@ def llavidal_infer(video_frames, question, conv_mode, model, vision_tower, token
     """
 
     # Prepare question string for the model
-    if model.get_model().vision_config.use_string_modality_prefix:
-        video_append = '\n' + DEFAULT_VIDEO_STRING_PREFIX
-    else:
-        video_append = '\n'
+    # if model.get_model().vision_config.use_string_modality_prefix:
+    video_append = '\n' + DEFAULT_VIDEO_STRING_PREFIX
+    # else:
+    #     video_append = '\n'
 
     if model.get_model().vision_config.use_vid_start_end:
         video_append = video_append + DEFAULT_VID_START_TOKEN + DEFAULT_VIDEO_PATCH_TOKEN * video_token_len + DEFAULT_VID_END_TOKEN
@@ -87,16 +87,18 @@ def llavidal_infer(video_frames, question, conv_mode, model, vision_tower, token
     image_tensor = image_processor.preprocess(video_frames, return_tensors='pt')['pixel_values']
 
     # Move image tensor to GPU and reduce precision to half
-    image_tensor = image_tensor.half().cuda()
+    # image_tensor = image_tensor.half().cuda()
+    image_tensor = image_tensor.half().to(device)
 
     # Generate video spatio-temporal features
     with torch.no_grad():
         image_forward_outs = vision_tower(image_tensor, output_hidden_states=True)
         frame_features = image_forward_outs.hidden_states[-2][:, 1:] # Use second to last layer as in LLaVA
     video_spatio_temporal_features = get_spatio_temporal_features_torch(frame_features)
-
+    video_spatio_temporal_features =video_spatio_temporal_features.to(device)
     # Move inputs to GPU
-    input_ids = torch.as_tensor(inputs.input_ids).cuda()
+    # input_ids = torch.as_tensor(inputs.input_ids).cuda()
+    input_ids = torch.as_tensor(inputs.input_ids).to(device)
 
     # Define stopping criteria for generation
     stop_str = conv.sep if conv.sep_style != SeparatorStyle.TWO else conv.sep2
@@ -106,11 +108,13 @@ def llavidal_infer(video_frames, question, conv_mode, model, vision_tower, token
     with torch.inference_mode():
         output_ids = model.generate(
             input_ids,
-            video_spatio_temporal_features=video_spatio_temporal_features.unsqueeze(0),
+            video_spatio_temporal_features=video_spatio_temporal_features.unsqueeze(0).to(device),
             do_sample=True,
             temperature=0.1,
             max_new_tokens=max_new_tokens,
-            stopping_criteria=[stopping_criteria])
+            stopping_criteria=[stopping_criteria],
+            eos_token_id=tokenizer.eos_token_id,
+            )
 
     # Check if output is the same as input
     n_diff_input_output = (input_ids != output_ids[:, :input_ids.shape[1]]).sum().item()

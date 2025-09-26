@@ -127,6 +127,19 @@ def initialize_model(model_name, projection_path=None, use_token_modality_prefix
     Because we only use video modality at inference, we only add video modality tokens here. So we have to filter the video modality tokens from the projection weights.
     '''
     ## Add the patch tokens (these are always used)
+    # if not using_base_videochatgpt_weights:
+    #     modality_patch_tokens = [DEFAULT_VIDEO_PATCH_TOKEN, DEFAULT_OBJECT_PATCH_TOKEN, DEFAULT_POSE_PATCH_TOKEN] # token id will be 32004
+    # else:
+    #     modality_patch_tokens = [DEFAULT_VIDEO_PATCH_TOKEN]
+
+    # tokenizer.add_tokens(modality_patch_tokens, special_tokens=True)
+
+    # ## Add the start and end tokens for video, object, and pose
+    # if mm_use_vid_start_end:
+    #     tokenizer.add_tokens([DEFAULT_VID_START_TOKEN, DEFAULT_VID_END_TOKEN], special_tokens=True)
+    #     additional_tokens = [DEFAULT_OBJECT_START_TOKEN,DEFAULT_OBJECT_PATCH_TOKEN,DEFAULT_OBJECT_END_TOKEN]
+    #     tokenizer.add_tokens(additional_tokens, special_tokens=True)
+       
     if not using_base_videochatgpt_weights:
         modality_patch_tokens = [DEFAULT_VIDEO_PATCH_TOKEN, DEFAULT_OBJECT_PATCH_TOKEN, DEFAULT_POSE_PATCH_TOKEN] # token id will be 32004
     else:
@@ -136,19 +149,12 @@ def initialize_model(model_name, projection_path=None, use_token_modality_prefix
 
     ## Add the start and end tokens for video, object, and pose
     if mm_use_vid_start_end:
-<<<<<<< HEAD
         if not using_base_videochatgpt_weights:
             modality_prefix_tokens = [DEFAULT_VID_START_TOKEN, DEFAULT_VID_END_TOKEN, DEFAULT_OBJECT_START_TOKEN, DEFAULT_OBJECT_END_TOKEN, DEFAULT_POSE_START_TOKEN, DEFAULT_POSE_END_TOKEN] # token id will be 32005, 32006
         else:
             modality_prefix_tokens = [DEFAULT_VID_START_TOKEN, DEFAULT_VID_END_TOKEN]
 
         tokenizer.add_tokens(modality_prefix_tokens, special_tokens=True)
-=======
-        tokenizer.add_tokens([DEFAULT_VID_START_TOKEN, DEFAULT_VID_END_TOKEN], special_tokens=True)
-        additional_tokens = [DEFAULT_OBJECT_START_TOKEN,DEFAULT_OBJECT_PATCH_TOKEN,DEFAULT_OBJECT_END_TOKEN]
-        tokenizer.add_tokens(additional_tokens, special_tokens=True)
-       
->>>>>>> upstream/v2
 
     # Resize token embeddings of the model
     model.resize_token_embeddings(len(tokenizer)) # will be 32004 or 32006 (if mm_use_vid_start_end is True)
@@ -213,13 +219,22 @@ def initialize_model(model_name, projection_path=None, use_token_modality_prefix
 
     # Set model to evaluation mode and move to GPU
     model = model.eval()
-    model = model.cuda()
+    # model = model.cuda()
+    local_rank = int(os.environ["LOCAL_RANK"])
+    torch.cuda.set_device(local_rank)
+    device = torch.device(f"cuda:{local_rank}")
     #breakpoint()
+    model = model.to(device).eval()
     vision_tower_name = "openai/clip-vit-large-patch14"
 
     # Load vision tower and move to GPU
-    vision_tower = CLIPVisionModel.from_pretrained(vision_tower_name, torch_dtype=torch.float16,
-                                                   low_cpu_mem_usage=True).cuda()
+    # vision_tower = CLIPVisionModel.from_pretrained(vision_tower_name, torch_dtype=torch.float16,
+    #                                                low_cpu_mem_usage=True).cuda()
+    vision_tower = CLIPVisionModel.from_pretrained(
+        vision_tower_name,
+        torch_dtype=torch.float16,
+        low_cpu_mem_usage=True
+    ).to(device)
     vision_tower = vision_tower.eval()
 
     # Configure vision model
@@ -230,17 +245,6 @@ def initialize_model(model_name, projection_path=None, use_token_modality_prefix
     if mm_use_vid_start_end:
         vision_config.vid_start_token, vision_config.vid_end_token = tokenizer.convert_tokens_to_ids(
             [DEFAULT_VID_START_TOKEN, DEFAULT_VID_END_TOKEN])
-<<<<<<< HEAD
-        
-    # string modality prefix. will be taken care of in the model inference code
-    vision_config.use_string_modality_prefix = use_string_modality_prefix
-
-    # Set video token length
-    video_token_len = 356
-
-    # print(tokenizer.convert_tokens_to_ids([DEFAULT_VIDEO_PATCH_TOKEN, DEFAULT_OBJECT_PATCH_TOKEN, DEFAULT_POSE_PATCH_TOKEN, DEFAULT_VID_START_TOKEN, DEFAULT_VID_END_TOKEN, DEFAULT_OBJECT_START_TOKEN, DEFAULT_OBJECT_END_TOKEN, DEFAULT_POSE_START_TOKEN, DEFAULT_POSE_END_TOKEN]))
-
-=======
         # vision_config.pose_start_token, vision_config.pose_end_token = tokenizer.convert_tokens_to_ids(
             # [DEFAULT_POSE_START_TOKEN, DEFAULT_POSE_END_TOKEN])
         vision_config.object_start_token, vision_config.object_end_token = tokenizer.convert_tokens_to_ids(
@@ -248,5 +252,4 @@ def initialize_model(model_name, projection_path=None, use_token_modality_prefix
 
     # Set video token length
     video_token_len = 356
->>>>>>> upstream/v2
-    return model, vision_tower, tokenizer, image_processor, video_token_len
+    return model, vision_tower, tokenizer, image_processor, video_token_len,device

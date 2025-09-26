@@ -37,7 +37,7 @@ def main():
         try:
             # Compute the similarity score using GPT-3
             completion = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4o-mini-2024-07-18",
                 messages=[
                     {
                         "role": "system",

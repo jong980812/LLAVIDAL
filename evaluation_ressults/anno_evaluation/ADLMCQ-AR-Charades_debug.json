@@ -1,0 +1,173 @@
+[
+        {
+        "id": "T5ECU",
+        "Q": "What is the sequence of actions being performed in the video?",
+        "Options": "1. ['Watching/Looking outside of a window', 'Laughing at television', 'Washing a cup/glass/bottle', 'Taking some clothes from somewhere', 'Someone is eating something', 'Opening a window', 'Throwing a blanket somewhere', 'Sitting in a chair', 'Tidying up a blanket/s', 'Putting a phone/camera somewhere'] 2. ['Throwing a bag somewhere', 'Tidying up a blanket/s', 'Turning off a light', 'Throwing clothes somewhere'] 3. ['Watching/Looking outside of a window', 'Taking a vacuum from somewhere', 'Someone is standing up from somewhere', 'Someone is laughing', 'Holding a cup/glass/bottle of something', 'Someone is smiling', 'Holding a dish', 'Sitting in a chair', 'Someone is going from standing to sitting', 'Someone is running somewhere', 'Holding a vacuum', 'Drinking from a cup/glass/bottle'] 4. ['Putting clothes somewhere', 'Holding a dish', 'Putting a phone/camera somewhere', 'Turning off a light', 'Sitting on sofa/couch', 'Taking a picture of something', 'Opening a door', 'Throwing a blanket somewhere', 'Someone is laughing', 'Reaching for and grabbing a picture', 'Closing a closet/cabinet', 'Putting a sandwich somewhere']",
+        "Ground Truth": [
+            "Watching/Looking outside of a window",
+            "Taking a vacuum from somewhere",
+            "Someone is standing up from somewhere",
+            "Someone is laughing",
+            "Holding a cup/glass/bottle of something",
+            "Someone is smiling",
+            "Holding a dish",
+            "Sitting in a chair",
+            "Someone is going from standing to sitting",
+            "Someone is running somewhere",
+            "Holding a vacuum",
+            "Drinking from a cup/glass/bottle"
+        ]
+    },
+        {
+        "id": "T5ECU",
+        "Q": "What is the sequence of actions being performed in the video?",
+        "Options": "1. ['Watching/Looking outside of a window', 'Laughing at television', 'Washing a cup/glass/bottle', 'Taking some clothes from somewhere', 'Someone is eating something', 'Opening a window', 'Throwing a blanket somewhere', 'Sitting in a chair', 'Tidying up a blanket/s', 'Putting a phone/camera somewhere'] 2. ['Throwing a bag somewhere', 'Tidying up a blanket/s', 'Turning off a light', 'Throwing clothes somewhere'] 3. ['Watching/Looking outside of a window', 'Taking a vacuum from somewhere', 'Someone is standing up from somewhere', 'Someone is laughing', 'Holding a cup/glass/bottle of something', 'Someone is smiling', 'Holding a dish', 'Sitting in a chair', 'Someone is going from standing to sitting', 'Someone is running somewhere', 'Holding a vacuum', 'Drinking from a cup/glass/bottle'] 4. ['Putting clothes somewhere', 'Holding a dish', 'Putting a phone/camera somewhere', 'Turning off a light', 'Sitting on sofa/couch', 'Taking a picture of something', 'Opening a door', 'Throwing a blanket somewhere', 'Someone is laughing', 'Reaching for and grabbing a picture', 'Closing a closet/cabinet', 'Putting a sandwich somewhere']",
+        "Ground Truth": [
+            "Watching/Looking outside of a window",
+            "Taking a vacuum from somewhere",
+            "Someone is standing up from somewhere",
+            "Someone is laughing",
+            "Holding a cup/glass/bottle of something",
+            "Someone is smiling",
+            "Holding a dish",
+            "Sitting in a chair",
+            "Someone is going from standing to sitting",
+            "Someone is running somewhere",
+            "Holding a vacuum",
+            "Drinking from a cup/glass/bottle"
+        ]
+    },
+        {
+        "id": "T5ECU",
+        "Q": "What is the sequence of actions being performed in the video?",
+        "Options": "1. ['Watching/Looking outside of a window', 'Laughing at television', 'Washing a cup/glass/bottle', 'Taking some clothes from somewhere', 'Someone is eating something', 'Opening a window', 'Throwing a blanket somewhere', 'Sitting in a chair', 'Tidying up a blanket/s', 'Putting a phone/camera somewhere'] 2. ['Throwing a bag somewhere', 'Tidying up a blanket/s', 'Turning off a light', 'Throwing clothes somewhere'] 3. ['Watching/Looking outside of a window', 'Taking a vacuum from somewhere', 'Someone is standing up from somewhere', 'Someone is laughing', 'Holding a cup/glass/bottle of something', 'Someone is smiling', 'Holding a dish', 'Sitting in a chair', 'Someone is going from standing to sitting', 'Someone is running somewhere', 'Holding a vacuum', 'Drinking from a cup/glass/bottle'] 4. ['Putting clothes somewhere', 'Holding a dish', 'Putting a phone/camera somewhere', 'Turning off a light', 'Sitting on sofa/couch', 'Taking a picture of something', 'Opening a door', 'Throwing a blanket somewhere', 'Someone is laughing', 'Reaching for and grabbing a picture', 'Closing a closet/cabinet', 'Putting a sandwich somewhere']",
+        "Ground Truth": [
+            "Watching/Looking outside of a window",
+            "Taking a vacuum from somewhere",
+            "Someone is standing up from somewhere",
+            "Someone is laughing",
+            "Holding a cup/glass/bottle of something",
+            "Someone is smiling",
+            "Holding a dish",
+            "Sitting in a chair",
+            "Someone is going from standing to sitting",
+            "Someone is running somewhere",
+            "Holding a vacuum",
+            "Drinking from a cup/glass/bottle"
+        ]
+    },
+        {
+        "id": "T5ECU",
+        "Q": "What is the sequence of actions being performed in the video?",
+        "Options": "1. ['Watching/Looking outside of a window', 'Laughing at television', 'Washing a cup/glass/bottle', 'Taking some clothes from somewhere', 'Someone is eating something', 'Opening a window', 'Throwing a blanket somewhere', 'Sitting in a chair', 'Tidying up a blanket/s', 'Putting a phone/camera somewhere'] 2. ['Throwing a bag somewhere', 'Tidying up a blanket/s', 'Turning off a light', 'Throwing clothes somewhere'] 3. ['Watching/Looking outside of a window', 'Taking a vacuum from somewhere', 'Someone is standing up from somewhere', 'Someone is laughing', 'Holding a cup/glass/bottle of something', 'Someone is smiling', 'Holding a dish', 'Sitting in a chair', 'Someone is going from standing to sitting', 'Someone is running somewhere', 'Holding a vacuum', 'Drinking from a cup/glass/bottle'] 4. ['Putting clothes somewhere', 'Holding a dish', 'Putting a phone/camera somewhere', 'Turning off a light', 'Sitting on sofa/couch', 'Taking a picture of something', 'Opening a door', 'Throwing a blanket somewhere', 'Someone is laughing', 'Reaching for and grabbing a picture', 'Closing a closet/cabinet', 'Putting a sandwich somewhere']",
+        "Ground Truth": [
+            "Watching/Looking outside of a window",
+            "Taking a vacuum from somewhere",
+            "Someone is standing up from somewhere",
+            "Someone is laughing",
+            "Holding a cup/glass/bottle of something",
+            "Someone is smiling",
+            "Holding a dish",
+            "Sitting in a chair",
+            "Someone is going from standing to sitting",
+            "Someone is running somewhere",
+            "Holding a vacuum",
+            "Drinking from a cup/glass/bottle"
+        ]
+    },
+        {
+        "id": "T5ECU",
+        "Q": "What is the sequence of actions being performed in the video?",
+        "Options": "1. ['Watching/Looking outside of a window', 'Laughing at television', 'Washing a cup/glass/bottle', 'Taking some clothes from somewhere', 'Someone is eating something', 'Opening a window', 'Throwing a blanket somewhere', 'Sitting in a chair', 'Tidying up a blanket/s', 'Putting a phone/camera somewhere'] 2. ['Throwing a bag somewhere', 'Tidying up a blanket/s', 'Turning off a light', 'Throwing clothes somewhere'] 3. ['Watching/Looking outside of a window', 'Taking a vacuum from somewhere', 'Someone is standing up from somewhere', 'Someone is laughing', 'Holding a cup/glass/bottle of something', 'Someone is smiling', 'Holding a dish', 'Sitting in a chair', 'Someone is going from standing to sitting', 'Someone is running somewhere', 'Holding a vacuum', 'Drinking from a cup/glass/bottle'] 4. ['Putting clothes somewhere', 'Holding a dish', 'Putting a phone/camera somewhere', 'Turning off a light', 'Sitting on sofa/couch', 'Taking a picture of something', 'Opening a door', 'Throwing a blanket somewhere', 'Someone is laughing', 'Reaching for and grabbing a picture', 'Closing a closet/cabinet', 'Putting a sandwich somewhere']",
+        "Ground Truth": [
+            "Watching/Looking outside of a window",
+            "Taking a vacuum from somewhere",
+            "Someone is standing up from somewhere",
+            "Someone is laughing",
+            "Holding a cup/glass/bottle of something",
+            "Someone is smiling",
+            "Holding a dish",
+            "Sitting in a chair",
+            "Someone is going from standing to sitting",
+            "Someone is running somewhere",
+            "Holding a vacuum",
+            "Drinking from a cup/glass/bottle"
+        ]
+    },
+        {
+        "id": "T5ECU",
+        "Q": "What is the sequence of actions being performed in the video?",
+        "Options": "1. ['Watching/Looking outside of a window', 'Laughing at television', 'Washing a cup/glass/bottle', 'Taking some clothes from somewhere', 'Someone is eating something', 'Opening a window', 'Throwing a blanket somewhere', 'Sitting in a chair', 'Tidying up a blanket/s', 'Putting a phone/camera somewhere'] 2. ['Throwing a bag somewhere', 'Tidying up a blanket/s', 'Turning off a light', 'Throwing clothes somewhere'] 3. ['Watching/Looking outside of a window', 'Taking a vacuum from somewhere', 'Someone is standing up from somewhere', 'Someone is laughing', 'Holding a cup/glass/bottle of something', 'Someone is smiling', 'Holding a dish', 'Sitting in a chair', 'Someone is going from standing to sitting', 'Someone is running somewhere', 'Holding a vacuum', 'Drinking from a cup/glass/bottle'] 4. ['Putting clothes somewhere', 'Holding a dish', 'Putting a phone/camera somewhere', 'Turning off a light', 'Sitting on sofa/couch', 'Taking a picture of something', 'Opening a door', 'Throwing a blanket somewhere', 'Someone is laughing', 'Reaching for and grabbing a picture', 'Closing a closet/cabinet', 'Putting a sandwich somewhere']",
+        "Ground Truth": [
+            "Watching/Looking outside of a window",
+            "Taking a vacuum from somewhere",
+            "Someone is standing up from somewhere",
+            "Someone is laughing",
+            "Holding a cup/glass/bottle of something",
+            "Someone is smiling",
+            "Holding a dish",
+            "Sitting in a chair",
+            "Someone is going from standing to sitting",
+            "Someone is running somewhere",
+            "Holding a vacuum",
+            "Drinking from a cup/glass/bottle"
+        ]
+    },
+        {
+        "id": "T5ECU",
+        "Q": "What is the sequence of actions being performed in the video?",
+        "Options": "1. ['Watching/Looking outside of a window', 'Laughing at television', 'Washing a cup/glass/bottle', 'Taking some clothes from somewhere', 'Someone is eating something', 'Opening a window', 'Throwing a blanket somewhere', 'Sitting in a chair', 'Tidying up a blanket/s', 'Putting a phone/camera somewhere'] 2. ['Throwing a bag somewhere', 'Tidying up a blanket/s', 'Turning off a light', 'Throwing clothes somewhere'] 3. ['Watching/Looking outside of a window', 'Taking a vacuum from somewhere', 'Someone is standing up from somewhere', 'Someone is laughing', 'Holding a cup/glass/bottle of something', 'Someone is smiling', 'Holding a dish', 'Sitting in a chair', 'Someone is going from standing to sitting', 'Someone is running somewhere', 'Holding a vacuum', 'Drinking from a cup/glass/bottle'] 4. ['Putting clothes somewhere', 'Holding a dish', 'Putting a phone/camera somewhere', 'Turning off a light', 'Sitting on sofa/couch', 'Taking a picture of something', 'Opening a door', 'Throwing a blanket somewhere', 'Someone is laughing', 'Reaching for and grabbing a picture', 'Closing a closet/cabinet', 'Putting a sandwich somewhere']",
+        "Ground Truth": [
+            "Watching/Looking outside of a window",
+            "Taking a vacuum from somewhere",
+            "Someone is standing up from somewhere",
+            "Someone is laughing",
+            "Holding a cup/glass/bottle of something",
+            "Someone is smiling",
+            "Holding a dish",
+            "Sitting in a chair",
+            "Someone is going from standing to sitting",
+            "Someone is running somewhere",
+            "Holding a vacuum",
+            "Drinking from a cup/glass/bottle"
+        ]
+    },
+        {
+        "id": "T5ECU",
+        "Q": "What is the sequence of actions being performed in the video?",
+        "Options": "1. ['Watching/Looking outside of a window', 'Laughing at television', 'Washing a cup/glass/bottle', 'Taking some clothes from somewhere', 'Someone is eating something', 'Opening a window', 'Throwing a blanket somewhere', 'Sitting in a chair', 'Tidying up a blanket/s', 'Putting a phone/camera somewhere'] 2. ['Throwing a bag somewhere', 'Tidying up a blanket/s', 'Turning off a light', 'Throwing clothes somewhere'] 3. ['Watching/Looking outside of a window', 'Taking a vacuum from somewhere', 'Someone is standing up from somewhere', 'Someone is laughing', 'Holding a cup/glass/bottle of something', 'Someone is smiling', 'Holding a dish', 'Sitting in a chair', 'Someone is going from standing to sitting', 'Someone is running somewhere', 'Holding a vacuum', 'Drinking from a cup/glass/bottle'] 4. ['Putting clothes somewhere', 'Holding a dish', 'Putting a phone/camera somewhere', 'Turning off a light', 'Sitting on sofa/couch', 'Taking a picture of something', 'Opening a door', 'Throwing a blanket somewhere', 'Someone is laughing', 'Reaching for and grabbing a picture', 'Closing a closet/cabinet', 'Putting a sandwich somewhere']",
+        "Ground Truth": [
+            "Watching/Looking outside of a window",
+            "Taking a vacuum from somewhere",
+            "Someone is standing up from somewhere",
+            "Someone is laughing",
+            "Holding a cup/glass/bottle of something",
+            "Someone is smiling",
+            "Holding a dish",
+            "Sitting in a chair",
+            "Someone is going from standing to sitting",
+            "Someone is running somewhere",
+            "Holding a vacuum",
+            "Drinking from a cup/glass/bottle"
+        ]
+    },
+        {
+        "id": "T5ECU",
+        "Q": "What is the sequence of actions being performed in the video?",
+        "Options": "1. ['Watching/Looking outside of a window', 'Laughing at television', 'Washing a cup/glass/bottle', 'Taking some clothes from somewhere', 'Someone is eating something', 'Opening a window', 'Throwing a blanket somewhere', 'Sitting in a chair', 'Tidying up a blanket/s', 'Putting a phone/camera somewhere'] 2. ['Throwing a bag somewhere', 'Tidying up a blanket/s', 'Turning off a light', 'Throwing clothes somewhere'] 3. ['Watching/Looking outside of a window', 'Taking a vacuum from somewhere', 'Someone is standing up from somewhere', 'Someone is laughing', 'Holding a cup/glass/bottle of something', 'Someone is smiling', 'Holding a dish', 'Sitting in a chair', 'Someone is going from standing to sitting', 'Someone is running somewhere', 'Holding a vacuum', 'Drinking from a cup/glass/bottle'] 4. ['Putting clothes somewhere', 'Holding a dish', 'Putting a phone/camera somewhere', 'Turning off a light', 'Sitting on sofa/couch', 'Taking a picture of something', 'Opening a door', 'Throwing a blanket somewhere', 'Someone is laughing', 'Reaching for and grabbing a picture', 'Closing a closet/cabinet', 'Putting a sandwich somewhere']",
+        "Ground Truth": [
+            "Watching/Looking outside of a window",
+            "Taking a vacuum from somewhere",
+            "Someone is standing up from somewhere",
+            "Someone is laughing",
+            "Holding a cup/glass/bottle of something",
+            "Someone is smiling",
+            "Holding a dish",
+            "Sitting in a chair",
+            "Someone is going from standing to sitting",
+            "Someone is running somewhere",
+            "Holding a vacuum",
+            "Drinking from a cup/glass/bottle"
+        ]
+    }
+]
